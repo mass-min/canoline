@@ -1,0 +1,12 @@
+version: '3'
+services:
+  app:
+    build:
+      context: ../
+      dockerfile: ./docker/php/Dockerfile
+    environment:
+      DB_HOST: ${DB_HOST:-mysql}
+    volumes:
+      - .:/usr/src/canoline
+      - ./node_modules:/usr/src/canoline/node_modules
+      - ./vendor:/usr/src/canoline/vendor

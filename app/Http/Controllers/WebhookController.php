@@ -1,53 +1,32 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Jobs\ReceiveLineEvent;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use LINE\LINEBot\Constant\HTTPHeader;
-use LINE\LINEBot\Exception\InvalidSignatureException;
-use LINE\LINEBot\SignatureValidator;
 
+/**
+ * Class WebhookController
+ *
+ * @package App\Http\Controllers
+ */
 class WebhookController extends Controller
 {
     /**
      * @param Request $request
+     *
+     * @return JsonResponse
      */
-    public function webhook(Request $request)
+    public function webhook(Request $request): JsonResponse
     {
         try {
-            $signature = $this->getValidSignature($request);
+            $signature = $request->headers->get(HTTPHeader::LINE_SIGNATURE);
+            ReceiveLineEvent::dispatch($signature, $request->getContent());
 
-            $lineBotClient = app('line-bot');
-            $events = $lineBotClient->parseEventRequest($request->getContent(), $signature);
-
-            foreach ($events as $event) {
-                \Log::debug($event->getText());
-                $res = $lineBotClient->replyText($event->getReplyToken(), $event->getText());
-
-                if ($res->isSucceeded()) {
-                    \Log::debug('Succeeded!');
-                } else {
-                    \Log::debug($res->getHTTPStatus() . ' ' . $res->getRawBody());
-                }
-            }
+            return response()->json([], 200, [], JSON_UNESCAPED_UNICODE);
         } catch (\Exception $e) {
             \Log::debug($e);
         }
-    }
-
-    /**
-     * @param Request $request
-     * @return string|null
-     * @throws InvalidSignatureException
-     */
-    private function getValidSignature(Request $request): ?string
-    {
-        $signature = $request->headers->get(HTTPHeader::LINE_SIGNATURE);
-
-        if (!SignatureValidator::validateSignature($request->getContent(), env('LINE_BOT_CHANNEL_SECRET'), $signature)) {
-            abort(400);
-        }
-
-        return $signature;
     }
 }
