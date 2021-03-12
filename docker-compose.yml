@@ -5,16 +5,18 @@ services:
       context: .
       dockerfile: ./docker/mysql/Dockerfile
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_USER: ${DB_USER:-canoline}
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+      MYSQL_PASSWORD: ${DB_PASSWORD:-canoline}
       MYSQL_DATABASE: ${DB_DATABASE:-canoline_dev}
     ports:
       - "${DB_PORT:-3306}:3306"
     volumes:
-      - ./docker/mysql/tmp/mysql:/var/lib/mysql
+      - ./docker/mysql/tmp:/var/lib/mysql
       - ./docker/mysql/etc/mysql/conf.d/my.cnf:/etc/mysql/conf.d/my.cnf
   php:
     extends:
-      file: ./docker/app-common.yml
+      file: ./app-common.yml
       service: app
     depends_on:
       - mysql
@@ -35,7 +37,7 @@ services:
     image: library/redis:6.0.10-alpine
   queue:
     extends:
-      file: ./docker/app-common.yml
+      file: ./app-common.yml
       service: app
     depends_on:
       - mysql

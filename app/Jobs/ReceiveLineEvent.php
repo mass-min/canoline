@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use LINE\LINEBot;
 use LINE\LINEBot\Exception\InvalidSignatureException;
 use LINE\LINEBot\HTTPClient\CurlHTTPClient;
+use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use LINE\LINEBot\SignatureValidator;
 
 /**
@@ -40,17 +41,20 @@ class ReceiveLineEvent implements ShouldQueue
     public function handle()
     {
         if (!$this->isValidSignature($this->signature, $this->requestBody)) {
-            throw new \Exception('invalid signature');
+            \Log::error('invalid signature');
+            return;
         }
 
-        $httpClient = new CurlHTTPClient(env('LINE_CHANNEL_ACCESS_TOKEN'));
-        $lineBotClient = new LINEBot($httpClient, ['channelSecret' => env('LINE_CHANNEL_SECRET')]);
+        $httpClient = new CurlHTTPClient(env('LINE_BOT_CHANNEL_ACCESS_TOKEN'));
+        $lineBotClient = new LINEBot($httpClient, ['channelSecret' => env('LINE_BOT_CHANNEL_SECRET')]);
 
         $events = $lineBotClient->parseEventRequest($this->requestBody, $this->signature);
 
         foreach ($events as $event) {
             if ($event->getType() === LineEvent::TYPE_MESSAGE_EVENT) {
-                $res = $lineBotClient->replyText($event->getReplyToken(), $event->getText());
+                \Log::info($event->getTimestamp() . $event->getText());
+                $textMessageBuilder = new TextMessageBuilder($event->getText());
+                $res = $lineBotClient->pushMessage($event->getUserId(), $textMessageBuilder);
 
                 if ($res->isSucceeded()) {
                     \Log::debug('Succeeded!');

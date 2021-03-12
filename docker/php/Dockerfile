@@ -25,10 +25,10 @@ COPY composer.json composer.lock* $APP_ROOT/
 COPY docker/php/etc/supervisor/conf.d/queue.conf /etc/supervisor/conf.d/queue.conf
 COPY docker/php/www.conf /usr/local/etc/php-fpm.d/www.conf
 
-SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+SHELL ["/bin/sh", "-oeux", "pipefail", "-c"]
 RUN apk update && \
     apk add --no-cache git mysql-client php7-sockets supervisor \
-    bash=5.1.0-r0 && \
+    bash && \
     git clone https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis && \
     docker-php-ext-install -j$(nproc) pdo_mysql sockets redis && \
     echo files=/etc/supervisor/conf.d/*.conf >> /etc/supervisord.conf && \
