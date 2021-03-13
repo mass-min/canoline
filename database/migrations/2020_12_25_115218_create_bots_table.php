@@ -16,6 +16,7 @@ class CreateBotsTable extends Migration
     {
         Schema::create('bots', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('company_id');
             $table->foreign('company_id')->references('id')->on('companies');
             $table->string('bot_user_id')->comment('LINE Botの内部ID');
             $table->string('basic_id')->comment('LINE BotのアカウントID');

@@ -52,15 +52,8 @@ class ReceiveLineEvent implements ShouldQueue
 
         foreach ($events as $event) {
             if ($event->getType() === LineEvent::TYPE_MESSAGE_EVENT) {
-                \Log::info($event->getTimestamp() . $event->getText());
                 $textMessageBuilder = new TextMessageBuilder($event->getText());
-                $res = $lineBotClient->pushMessage($event->getUserId(), $textMessageBuilder);
-
-                if ($res->isSucceeded()) {
-                    \Log::debug('Succeeded!');
-                } else {
-                    \Log::debug($res->getHTTPStatus() . ' ' . $res->getRawBody());
-                }
+                $lineBotClient->pushMessage($event->getUserId(), $textMessageBuilder);
             }
         }
     }

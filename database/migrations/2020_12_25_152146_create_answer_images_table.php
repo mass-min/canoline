@@ -15,6 +15,7 @@ class CreateAnswerImagesTable extends Migration
     {
         Schema::create('answer_images', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('answer_id');
             $table->foreign('answer_id')->references('id')->on('answers');
             $table->string('path');
             $table->string('preview_path');

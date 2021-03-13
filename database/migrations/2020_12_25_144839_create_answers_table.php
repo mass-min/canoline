@@ -16,8 +16,9 @@ class CreateAnswersTable extends Migration
     {
         Schema::create('answers', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('question_id');
             $table->foreign('question_id')->references('id')->on('questions');
-            $table->integer('sort_id')->default(Answer::MAX_ANSWER_COUNT);
+            $table->unsignedInteger('sort_id')->default(Answer::MAX_ANSWER_COUNT);
             $table->timestamps();
         });
     }

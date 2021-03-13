@@ -15,6 +15,7 @@ class CreateAnswerTextsTable extends Migration
     {
         Schema::create('answer_texts', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('answer_id');
             $table->foreign('answer_id')->references('id')->on('answers');
             $table->text('text');
             $table->timestamps();

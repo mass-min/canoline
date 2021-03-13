@@ -15,6 +15,7 @@ class CreateQuestionsTable extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('bot_id');
             $table->foreign('bot_id')->references('id')->on('bots');
             $table->string('text');
             $table->timestamps();
