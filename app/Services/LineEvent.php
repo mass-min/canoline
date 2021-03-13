@@ -1,9 +1,11 @@
 <?php
-
-
 namespace App\Services;
 
-
+/**
+ * Class LineEvent
+ *
+ * @package App\Services
+ */
 class LineEvent
 {
     const TYPE_MESSAGE_EVENT = 'message';
