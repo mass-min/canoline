@@ -1,6 +1,6 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
-<form action="{{ route('bots.store') }}" method="POST" class="p-2">
+<form action="{{ route('bot.store') }}" method="POST" class="p-2">
     @csrf
     <div class="mb-3">
         <label for="basic_id" class="form-label">内部ID</label>

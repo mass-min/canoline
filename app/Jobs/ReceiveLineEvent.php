@@ -61,38 +61,45 @@ class ReceiveLineEvent implements ShouldQueue
         foreach ($events as $event) {
             $eventType = $event->getType();
 
-            \Log::warning($this->bot->id);
-            \Log::warning($this->bot->id === 1);
-
-            if ($this->bot->id === 1) {
-                $textMessageBuilder = new TextMessageBuilder($event->getText());
+//            if ($this->bot->id === 1) {
+                $questions = $this->bot->questions;
+                \Log::info($event->getText());
+                foreach ($questions as $question) {
+                    \Log::info($question->question_text);
+                    if ($event->getText() === $question->question_text) {
+                        $textMessageBuilder = new TextMessageBuilder($question->answer_text);
+                        $lineBotClient->pushMessage($event->getUserId(), $textMessageBuilder);
+                        return;
+                    }
+                }
+                $textMessageBuilder = new TextMessageBuilder('よく分かりません');
                 $lineBotClient->pushMessage($event->getUserId(), $textMessageBuilder);
                 return;
-            } else {
-                if ($eventType === LineEvent::TYPE_MESSAGE_EVENT) {
-                    $postbackActionBuilder1 = new PostbackTemplateActionBuilder('2021-04-01 10:00', '2021年04月01日 10:00', '2021年04月01日 10:00');
-                    $postbackActionBuilder2 = new PostbackTemplateActionBuilder('2021-04-02 10:00', '2021年04月02日 10:00', '2021年04月02日 10:00');
-                    $postbackActionBuilder3 = new PostbackTemplateActionBuilder('2021-04-03 10:00', '2021年04月03日 10:00', '2021年04月03日 10:00');
-                    $postbackActionBuilder4 = new PostbackTemplateActionBuilder('2021-04-04 10:00', '2021年04月05日 10:00', '2021年04月04日 10:00');
-
-                    $buttonTemplateBuilder = new ButtonTemplateBuilder(
-                        '内見予約日時',
-                        '希望日時を以下から選択してください',
-                        'https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Chrome__logo.max-500x500.png',
-                        [$postbackActionBuilder1, $postbackActionBuilder2, $postbackActionBuilder3, $postbackActionBuilder4],
-                        'rectangle',
-                        'contain',
-                        '#000000'
-                    );
-                    $templateMessageBuilder = new TemplateMessageBuilder('this message is disabled on your device.', $buttonTemplateBuilder);
-                    $lineBotClient->pushMessage($event->getUserId(), $templateMessageBuilder);
-                } elseif ($eventType === LineEvent::TYPE_POSTBACK_EVENT) {
-                    $data = $event->getPostbackData();
-                    //                $params = $event->getPostbackParams();
-                    $textMessageBuilder = new TextMessageBuilder("日時選択ありがとうございます！\nそれでは、" . $data . ' にお待ちしております！');
-                    $lineBotClient->pushMessage($event->getUserId(), $textMessageBuilder);
-                }
-            }
+//            } else {
+//                if ($eventType === LineEvent::TYPE_MESSAGE_EVENT) {
+//                    $postbackActionBuilder1 = new PostbackTemplateActionBuilder('2021-04-01 10:00', '2021年04月01日 10:00', '2021年04月01日 10:00');
+//                    $postbackActionBuilder2 = new PostbackTemplateActionBuilder('2021-04-02 10:00', '2021年04月02日 10:00', '2021年04月02日 10:00');
+//                    $postbackActionBuilder3 = new PostbackTemplateActionBuilder('2021-04-03 10:00', '2021年04月03日 10:00', '2021年04月03日 10:00');
+//                    $postbackActionBuilder4 = new PostbackTemplateActionBuilder('2021-04-04 10:00', '2021年04月05日 10:00', '2021年04月04日 10:00');
+//
+//                    $buttonTemplateBuilder = new ButtonTemplateBuilder(
+//                        '内見予約日時',
+//                        '希望日時を以下から選択してください',
+//                        'https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Chrome__logo.max-500x500.png',
+//                        [$postbackActionBuilder1, $postbackActionBuilder2, $postbackActionBuilder3, $postbackActionBuilder4],
+//                        'rectangle',
+//                        'contain',
+//                        '#000000'
+//                    );
+//                    $templateMessageBuilder = new TemplateMessageBuilder('this message is disabled on your device.', $buttonTemplateBuilder);
+//                    $lineBotClient->pushMessage($event->getUserId(), $templateMessageBuilder);
+//                } elseif ($eventType === LineEvent::TYPE_POSTBACK_EVENT) {
+//                    $data = $event->getPostbackData();
+//                    //                $params = $event->getPostbackParams();
+//                    $textMessageBuilder = new TextMessageBuilder("日時選択ありがとうございます！\nそれでは、" . $data . ' にお待ちしております！');
+//                    $lineBotClient->pushMessage($event->getUserId(), $textMessageBuilder);
+//                }
+//            }
         }
     }
 

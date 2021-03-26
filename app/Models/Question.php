@@ -12,7 +12,9 @@ class Question extends Model
      * @var array
      */
     protected $fillable = [
-        'text',
+        'bot_id',
+        'question_text',
+        'answer_text'
     ];
 
     /**
@@ -21,13 +23,5 @@ class Question extends Model
     public function bot(): BelongsTo
     {
         return $this->belongsTo(Bot::class);
-    }
-
-    /**
-     * @return HasOne
-     */
-    public function answer(): HasOne
-    {
-        return $this->hasOne(Answer::class);
     }
 }

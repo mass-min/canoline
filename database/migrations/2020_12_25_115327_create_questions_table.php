@@ -17,7 +17,8 @@ class CreateQuestionsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('bot_id');
             $table->foreign('bot_id')->references('id')->on('bots');
-            $table->string('text');
+            $table->string('question_text');
+            $table->string('answer_text');
             $table->timestamps();
         });
     }

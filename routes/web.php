@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Bot\QuestionController;
 use App\Http\Controllers\BotController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,4 +18,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::resource('bots', BotController::class)->only(['create', 'store']);
+Route::resource('bots', BotController::class)->names('bot')
+    ->only(['index', 'create', 'store', 'show', 'edit', 'update']);
+Route::prefix('bots/{bot}')->as('bot.')->group(function(){
+    Route::resource('questions', QuestionController::class)->names('question');
+});
